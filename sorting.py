@@ -33,10 +33,16 @@ def sort(*args):
             debug_display_var.set("список отсортирован выбором")
 
         elif sort_type.get() == 'insertion':
-
-            debug_display_var.set("список НЕ отсортирован вставками")
+            for i in range(1, len(lst)):
+                elem = lst[i]
+                j=i
+                while j>0 and lst[j-1]>elem:
+                    lst[j] = lst[j-1]
+                    j-=1
+                lst[j]=elem
+            debug_display_var.set("список отсортирован вставками")
     else:
-        debug_display_var.set('Список пуст')
+        debug_display_var.set('список пуст')
 
 def load_lst(*args):
     
@@ -47,20 +53,19 @@ def load_lst(*args):
         global lst
         lst=[]
         for line in file:
-            lst.extend(list(map(int, line.split())))
-            debug_display_var.set(lst)
-        main_display_var.set("Список загружен")
+            lst.extend(list(map(int, line.split(","))))
+        debug_display_var.set("список загружен")
     except:
-        main_display_var.set("Нечитаемый файл")
+        debug_display_var.set("нечитаемый файл")
 
 def update_display(*args):
     if lst:
-        if print_all_state.get():
+        if not print_limited_state.get() or len(lst)<=20:
             main_display_var.set(", ".join(map(str,lst)))
         else:
             main_display_var.set(", ".join(map(str,lst[:20]))+"...")
     else:
-        main_display_var.set("Список пуст")
+        debug_display_var.set("список пуст")
 
 
 lst = []#глобальный лист
@@ -69,29 +74,25 @@ lst = []#глобальный лист
 root = Tk()
 root.title("Сортировка числовых списков")
 
-#подсветка для дебага
-color_style = ttk.Style()
-color_style.configure('Color.TFrame', background='#FF0000', borderwidth=5, relief='raised')
-
 mainframe = ttk.Frame(root, padding=12,)
 
 #малый дисплей
 debug_display_var = StringVar()
-debug_display_var.set("пусто")
-debug_display =ttk.Label(mainframe, textvariable=debug_display_var, wraplength=150)
+debug_display_var.set("загрузите список")
+debug_display =ttk.Label(mainframe, textvariable=debug_display_var, wraplength=200)
 
 #загрузка списка из файла
 load_button = ttk.Button(mainframe, text='загрузить список из файла', command=load_lst)
 
 #главный дисплей
 main_display_var = StringVar()#переменная дисплея
-main_display_var.set("Загрузите список из файла")
+main_display_var.set("")
 #wraplength указан константой, что не очень хорошо, но я без понятия, как сделать его по требуемой минимальной ширине
 main_display = ttk.Label(mainframe, textvariable=main_display_var, borderwidth=8, relief='ridge', wraplength=340, justify='center',anchor='center')
 
 #печать на дисплей
-print_all_state = BooleanVar(value=True)
-print_all_check = ttk.Checkbutton(mainframe, text="напечатать список целиком", variable=print_all_state)
+print_limited_state = BooleanVar(value=False)
+print_limited_check = ttk.Checkbutton(mainframe, text="напечатать только первые 20 эмелентов", variable=print_limited_state)
 
 print_button = ttk.Button(mainframe, text='напечатать список', command=update_display)
 
@@ -105,7 +106,8 @@ sort_radio_insertion = ttk.Radiobutton(mainframe, text="сортировка в�
 
 sort_button = ttk.Button(mainframe, text="отсортировать", command=sort)
 
-#TODO кнопка выхода
+#кнопка выхода TODO
+exit_button = ttk.Button(mainframe, text="выход", command=lambda: root.destroy())
 
 #расставляем элементы
 
@@ -119,8 +121,11 @@ load_button.grid(column=1, row=0) #заменить на column=0, row=0, column
 main_display.grid(column=0, row=1, columnspan=2, sticky='nwes')
 
 #элементы печати, левая часть внизу
-print_all_check.grid(column=0, row=2)
+print_limited_check.grid(column=0, row=2)
 print_button.grid(column=0, row=3)
+
+#кнопка выхода в самом низу слева
+exit_button.grid(column=0, row=5, sticky=W)
 
 #элементы сортировки, правая часть внизу
 sort_radio_bubble.grid(column=1, row=2, sticky=W)
@@ -137,6 +142,7 @@ for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
 
 root.bind('<x>', lambda e: debug_display_var.set(str(root.winfo_width())+" "+ str(root.winfo_height())+" ; " + str(root.winfo_reqwidth())+" "+ str(root.winfo_reqheight()) ))
+root.bind('<l>', lambda e: debug_display_var.set(str(len(lst))))
 
 root.resizable(False, False)
 
