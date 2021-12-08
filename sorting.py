@@ -6,40 +6,28 @@
 #4 отсортировать список вставками
 #5 вывести полученый список в панель
 #0 выход
-# 
+#TODO pep 8; pep 257; передавать в функции сортировки ссылку на список; оформить функции в модули; подготовить презентацию
 ####################################
 from tkinter import *
 from tkinter import ttk
 from tkinter.filedialog import askopenfilename
+from mysorts import *
 
-def sort(*args):
+def  my_sort(lst):
     if lst:
         if sort_type.get() =='bubble':
 
-            had_swaps = True
-            while had_swaps:
-                had_swaps = False
-                for i in range(1, len(lst)):
-                    if lst[i]<lst[i-1]:
-                        lst[i], lst[i-1] = lst[i-1], lst[i]
-                        had_swaps = True
+            bubble_sort(lst)
             debug_display_var.set("список отсортирован пузырьком")
             
         elif sort_type.get() == 'selection':
-            for i in range(len(lst)-1, -1, -1):
-                for j in range(i, -1, -1):
-                    if lst[j]>lst[i]:
-                        lst[i], lst[j] = lst[j], lst[i]
+            
+            selection_sort(lst)
             debug_display_var.set("список отсортирован выбором")
 
         elif sort_type.get() == 'insertion':
-            for i in range(1, len(lst)):
-                elem = lst[i]
-                j=i
-                while j>0 and lst[j-1]>elem:
-                    lst[j] = lst[j-1]
-                    j-=1
-                lst[j]=elem
+            
+            insertion_sort(lst)
             debug_display_var.set("список отсортирован вставками")
     else:
         debug_display_var.set('список пуст')
@@ -104,7 +92,7 @@ sort_radio_bubble = ttk.Radiobutton(mainframe, text="сортировка пуз
 sort_radio_selection = ttk.Radiobutton(mainframe, text="сортировка выбором", variable=sort_type, value='selection' )
 sort_radio_insertion = ttk.Radiobutton(mainframe, text="сортировка вставками", variable=sort_type, value='insertion' )
 
-sort_button = ttk.Button(mainframe, text="отсортировать", command=sort)
+sort_button = ttk.Button(mainframe, text="отсортировать", command=lambda: my_sort(lst))
 
 #кнопка выхода TODO
 exit_button = ttk.Button(mainframe, text="выход", command=lambda: root.destroy())
