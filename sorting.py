@@ -7,11 +7,23 @@
 5 вывести полученый список в панель
 0 выход
 """
+"""Графическая программма для ввода-вывода и сортировки списков.
+
+глобальные переменные:
+lst -- общий целочисленные
+
+функции:
+sort_lst -- сортировка lst различными методами
+load_lst -- загрузка lst из текстового файла
+update_display -- вывод lst на главный дислей
+"""
 
 """TODO pep 257; 
-расширить загрузку файла, чтоб можно было подавать списки и через пробел;
+расширить загрузку файла, чтоб можно было подавать списки через пробел;
 добавить функцию сохранения вывода; 
-оформить загрузку и выгрузку в поле в меню;подготовить презентацию"""
+оформить загрузку и выгрузку в поле в меню;
+подготовить презентацию;
+"""
 
 from tkinter import *
 from tkinter import ttk
@@ -23,7 +35,8 @@ from mysorts import bubble_sort, selection_sort, insertion_sort
 lst = []        # Глобальный спискок
 
 
-def  my_sort(lst):
+def  sort_lst(lst):
+    """сортировка lst различными методами"""
     if lst:
         if sort_type.get() == 'bubble':
 
@@ -40,20 +53,32 @@ def  my_sort(lst):
             insertion_sort(lst)
             debug_display_var.set("список отсортирован вставками")
     else:
-        debug_display_var.set('список пуст')
+        debug_display_var.set("список пуст")
 
 
 def load_lst(*args):
-    
+    """загрузка lst из текстового файла
+
+    переменные:
+    seps -- доступные разделители элементов списка
+    file -- открываемый файл
+    lst -- глобальный список
+    """
     filename = askopenfilename()
     file = open(filename,'r')
+    seps =",;-" 
     
     global lst
     lst = []
 
     try:
         for line in file:
-            lst.extend(list(map(int, line.split(","))))
+
+            mod_line = line
+            for sep_ in seps:
+                mod_line = mod_line.replace(sep_, " ")
+
+            lst.extend(list(map(int, mod_line.split())))
     except ValueError:
         debug_display_var.set("нечитаемый файл")
     else:
@@ -61,7 +86,8 @@ def load_lst(*args):
     file.close()
 
 
-def update_display(*args):
+def update_main_display(*args):
+    """вывод lst на главный дислей"""
     if lst:
         if not print_limited_state.get() or len(lst)<=20:
             main_display_var.set(", ".join(map(str,lst)))
@@ -108,7 +134,7 @@ print_limited_check = ttk.Checkbutton(
     variable=print_limited_state)
 # Кнопка печати на главный дисплей
 print_button = ttk.Button(
-    mainframe, text='напечатать список', command=update_display)
+    mainframe, text='напечатать список', command=update_main_display)
 
 # Выбор и запуск сортировки списка
 # Выбор сотрировки
@@ -121,7 +147,7 @@ sort_radio_insertion = ttk.Radiobutton(mainframe,
     text="сортировка вставками", variable=sort_type, value='insertion' )
 # Кнопка сортировки
 sort_button = ttk.Button(mainframe, 
-    text="отсортировать", command=lambda: my_sort(lst))
+    text="отсортировать", command=lambda: sort_lst(lst))
 
 # Кнопка выхода
 exit_button = ttk.Button(mainframe, 
