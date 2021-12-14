@@ -70,7 +70,7 @@ def load_lst():
     file -- открываемый файл
     lst -- глобальный целочисленный список
     """
-    seps =",;-"
+    seps =",;"
     filename = askopenfilename()
     file = open(filename,'r')
  
