@@ -14,8 +14,30 @@
 
 """Графическая программма для ввода-вывода и сортировки списков.
 
-глобальные переменные:
+переменные:
 lst -- глобальный целочисленный список
+
+root -- главное окно программы
+
+debug_display -- малое поле вывода, выводит доп. информацию
+debug_display_var -- переменная текста мал. поля вывода
+
+load_button -- кнопка, вызывающая load_lst()
+
+main_display -- главное поле вывода, в него выводится список
+main_display_var -- переменная текста главного поля вывода
+
+print_limited_check -- галочка вывода неполного списка
+print_limited_state -- переменная, связаная с галочкой
+print_button -- кнопка, вызывающая update_display
+
+sort_radio_bubble,
+sort_radio_selection,
+sort_radio_insertion -- элементы переключателя выбора сортироки
+sort_type -- переменная выбора типа сортировки, привязана к sort_radio
+sort_button -- кнопка, вызывающая sort_lst
+
+exit_button -- кнопка, выполняющая закрытие окна
 
 функции:
 sort_lst -- сортировка lst различными методами
@@ -39,25 +61,6 @@ from mysorts import bubble_sort, selection_sort, insertion_sort
 lst = []        # Глобальный целочисленный спискок
 
 
-def  sort_lst(lst):
-    """сортировка lst различными методами"""
-    if lst:
-        if sort_type.get() == 'bubble':
-
-            bubble_sort(lst)
-            debug_display_var.set("список отсортирован пузырьком")
-            
-        elif sort_type.get() == 'selection':
-            
-            selection_sort(lst)
-            debug_display_var.set("список отсортирован выбором")
-
-        elif sort_type.get() == 'insertion':
-            
-            insertion_sort(lst)
-            debug_display_var.set("список отсортирован вставками")
-    else:
-        debug_display_var.set("список пуст")
 
 
 def load_lst():
@@ -93,6 +96,27 @@ def load_lst():
     file.close()
 
 
+def  sort_lst(lst):
+    """сортировка lst различными способами"""
+    if lst:
+        if sort_type.get() == 'bubble':
+
+            bubble_sort(lst)
+            debug_display_var.set("список отсортирован пузырьком")
+            
+        elif sort_type.get() == 'selection':
+            
+            selection_sort(lst)
+            debug_display_var.set("список отсортирован выбором")
+
+        elif sort_type.get() == 'insertion':
+            
+            insertion_sort(lst)
+            debug_display_var.set("список отсортирован вставками")
+    else:
+        debug_display_var.set("список пуст")
+
+
 def update_main_display():
     """вывод lst на главный дислей с функцией частичного вывода"""
     if lst:
@@ -110,6 +134,7 @@ def update_main_display():
 # Основное окно
 root = Tk()
 root.title("Сортировка числовых списков")
+
 # Основная рамка, в которой находятся все элементы
 mainframe = ttk.Frame(root, padding=12,)
 
@@ -133,7 +158,7 @@ main_display = ttk.Label(
     borderwidth=8, relief='ridge', wraplength=340, 
     justify='center',anchor='center')
 
-# Обработка печати на дисплей
+# Элементы, отвечающие за печать на дисплей
 # Галочка, отвечающая за длинну выводимого списка
 print_limited_state = BooleanVar(value=False)
 print_limited_check = ttk.Checkbutton(
@@ -143,7 +168,7 @@ print_limited_check = ttk.Checkbutton(
 print_button = ttk.Button(
     mainframe, text='напечатать список', command=update_main_display)
 
-# Выбор и запуск сортировки списка
+# Выбор типа и сортировка списка
 # Выбор сотрировки с помощью переключателя
 sort_type = StringVar(value='bubble')
 sort_radio_bubble = ttk.Radiobutton(mainframe, 
@@ -152,7 +177,7 @@ sort_radio_selection = ttk.Radiobutton(mainframe,
     text="сортировка выбором", variable=sort_type, value='selection' )
 sort_radio_insertion = ttk.Radiobutton(mainframe, 
     text="сортировка вставками", variable=sort_type, value='insertion' )
-# Кнопка сортировки
+# Кнопка вызова сортировки
 sort_button = ttk.Button(mainframe, 
     text="отсортировать", command=lambda: sort_lst(lst))
 
