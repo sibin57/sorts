@@ -19,18 +19,24 @@ lst -- глобальный целочисленный список
 
 root -- главное окно программы
 
+mainframe -- основная рамка, в которой находятся все элементы
+
+Поле вывода информации
 debug_display -- малое поле вывода, выводит доп. информацию
 debug_display_var -- переменная текста мал. поля вывода
 
-load_button -- кнопка, вызывающая load_lst()
+load_button -- кнопка, вызывающая load_lst
 
+Поле вывода списка
 main_display -- главное поле вывода, в него выводится список
 main_display_var -- переменная текста главного поля вывода
 
+Вывод списка
 print_limited_check -- галочка вывода неполного списка
 print_limited_state -- переменная, связаная с галочкой
 print_button -- кнопка, вызывающая update_display
 
+Выбор типа и сортировка списка
 sort_radio_bubble,
 sort_radio_selection,
 sort_radio_insertion -- элементы переключателя выбора сортироки
@@ -45,7 +51,8 @@ load_lst -- загрузка lst из текстового файла
 update_display -- вывод lst на главный дислей
 """
 
-"""TODO pep 257; 
+"""TODO 
+pep 257; 
 добавить функцию сохранения вывода в файл; 
 оформить загрузку и выгрузку как поле в меню;
 подготовить презентацию;
@@ -57,10 +64,8 @@ from tkinter.filedialog import askopenfilename
 
 from mysorts import bubble_sort, selection_sort, insertion_sort
 
-
-lst = []        # Глобальный целочисленный спискок
-
-
+# Глобальный целочисленный спискок
+lst = []
 
 
 def load_lst():
@@ -89,7 +94,7 @@ def load_lst():
                 mod_line = mod_line.replace(sep_, " ")
 
             lst.extend(list(map(int, mod_line.split())))
-    except ValueError:# Ошибка возникает, когда элементы списка - не целые числа
+    except ValueError:# Возникает, когда элементы списка - не целые числа
         debug_display_var.set("нечитаемый файл")
     else:
         debug_display_var.set("список загружен")
@@ -131,40 +136,45 @@ def update_main_display():
 
 # Определяем виджеты
 
-# Основное окно
+# Главное окно программы
 root = Tk()
 root.title("Сортировка числовых списков")
 
 # Основная рамка, в которой находятся все элементы
 mainframe = ttk.Frame(root, padding=12,)
 
-# Малый дисплей, выводящий доп информацию
+# Поле вывода информации
+# Переменная текста мал. поля вывода
 debug_display_var = StringVar()
 debug_display_var.set("загрузите список")
+# Малое поле вывода, выводит доп. информацию
 debug_display = ttk.Label(
     mainframe, textvariable=debug_display_var, wraplength=200)
 
-# Кнопка загрузки списка из файла TODO переделать в меню
+# Кнопка, вызывающая load_lst() TODO переделать в меню
 load_button = ttk.Button(
     mainframe, text='загрузить список из файла', command=load_lst)
 
-# Главный дисплей, отвечающий за вывод списка
+# Поле вывода списка
+# Переменная текста главного поля вывода
 main_display_var = StringVar()#переменная дисплея
 main_display_var.set("")
-#wraplength указан буквально, что не очень хорошо
-#но я без понятия, как сделать его по требуемой минимальной ширине
+# Главное поле вывода, в него выводится список
 main_display = ttk.Label(
     mainframe, textvariable=main_display_var, 
     borderwidth=8, relief='ridge', wraplength=340, 
     justify='center',anchor='center')
+#wraplength указан буквально, что не очень хорошо
+#но я без понятия, как сделать его по требуемой минимальной ширине
 
-# Элементы, отвечающие за печать на дисплей
-# Галочка, отвечающая за длинну выводимого списка
+# Вывод списка
+# Переменная, связаная с галочкой
 print_limited_state = BooleanVar(value=False)
+# Галочка вывода неполного списка
 print_limited_check = ttk.Checkbutton(
     mainframe, text="напечатать только первые 20 эмелентов",
     variable=print_limited_state)
-# Кнопка печати на главный дисплей
+# Кнопка, вызывающая update_display
 print_button = ttk.Button(
     mainframe, text='напечатать список', command=update_main_display)
 
