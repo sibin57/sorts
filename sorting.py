@@ -64,7 +64,7 @@ from tkinter.filedialog import askopenfilename
 
 from mysorts import bubble_sort, selection_sort, insertion_sort
 
-# Глобальный целочисленный спискок
+# Глобальный целочисленный список
 lst = []
 
 
