@@ -1,5 +1,8 @@
 """
-изначальный набор комманд по ТЗ:
+заданиие выдал: Гусятинер Леонид Борисович
+задание выполнил: Головко Макар Денисович, студент П1-20
+
+изначальный набор комманд по заданию:
 1 загрузить список в панель
 2 отсортировать список пузырьком
 3 отсортировать список выбором
@@ -7,10 +10,12 @@
 5 вывести полученый список в панель
 0 выход
 """
+
+
 """Графическая программма для ввода-вывода и сортировки списков.
 
 глобальные переменные:
-lst -- общий целочисленные
+lst -- глобальный целочисленный список
 
 функции:
 sort_lst -- сортировка lst различными методами
@@ -19,9 +24,8 @@ update_display -- вывод lst на главный дислей
 """
 
 """TODO pep 257; 
-расширить загрузку файла, чтоб можно было подавать списки через пробел;
-добавить функцию сохранения вывода; 
-оформить загрузку и выгрузку в поле в меню;
+добавить функцию сохранения вывода в файл; 
+оформить загрузку и выгрузку как поле в меню;
 подготовить презентацию;
 """
 
@@ -32,7 +36,7 @@ from tkinter.filedialog import askopenfilename
 from mysorts import bubble_sort, selection_sort, insertion_sort
 
 
-lst = []        # Глобальный спискок
+lst = []        # Глобальный целочисленный спискок
 
 
 def  sort_lst(lst):
@@ -56,17 +60,20 @@ def  sort_lst(lst):
         debug_display_var.set("список пуст")
 
 
-def load_lst(*args):
-    """загрузка lst из текстового файла
+def load_lst():
+    """загрузка lst из ascii файла с числами, разделёнными sep
 
     переменные:
     seps -- доступные разделители элементов списка
+            пробелы тоже поддерживаются
+    filename -- имя открываемого файла
     file -- открываемый файл
-    lst -- глобальный список
+    lst -- глобальный целочисленный список
     """
+    seps =",;-"
     filename = askopenfilename()
     file = open(filename,'r')
-    seps =",;-" 
+ 
     
     global lst
     lst = []
@@ -79,15 +86,15 @@ def load_lst(*args):
                 mod_line = mod_line.replace(sep_, " ")
 
             lst.extend(list(map(int, mod_line.split())))
-    except ValueError:
+    except ValueError:# Ошибка возникает, когда элементы списка - не целые числа
         debug_display_var.set("нечитаемый файл")
     else:
         debug_display_var.set("список загружен")
     file.close()
 
 
-def update_main_display(*args):
-    """вывод lst на главный дислей"""
+def update_main_display():
+    """вывод lst на главный дислей с функцией частичного вывода"""
     if lst:
         if not print_limited_state.get() or len(lst)<=20:
             main_display_var.set(", ".join(map(str,lst)))
@@ -98,7 +105,7 @@ def update_main_display(*args):
 
 
 
-# Определяем элементы окна
+# Определяем виджеты
 
 # Основное окно
 root = Tk()
@@ -119,7 +126,7 @@ load_button = ttk.Button(
 # Главный дисплей, отвечающий за вывод списка
 main_display_var = StringVar()#переменная дисплея
 main_display_var.set("")
-#wraplength указан константой, что не очень хорошо
+#wraplength указан буквально, что не очень хорошо
 #но я без понятия, как сделать его по требуемой минимальной ширине
 main_display = ttk.Label(
     mainframe, textvariable=main_display_var, 
@@ -137,7 +144,7 @@ print_button = ttk.Button(
     mainframe, text='напечатать список', command=update_main_display)
 
 # Выбор и запуск сортировки списка
-# Выбор сотрировки
+# Выбор сотрировки с помощью переключателя
 sort_type = StringVar(value='bubble')
 sort_radio_bubble = ttk.Radiobutton(mainframe, 
     text="сортировка пузырьком", variable=sort_type, value='bubble' )
@@ -183,7 +190,7 @@ sort_button.grid(column=1, row=5)
 for child in mainframe.winfo_children(): 
     child.grid_configure(padx=5, pady=5)
 
-# Кнопка <x> выводит текущие размеры окна 
+# нажатие на клавишу <x> выводит текущие размеры окна 
 # и требуемые размеры окна в малый дисплей
 root.bind('<x>', 
     lambda e: debug_display_var.set(
@@ -192,11 +199,10 @@ root.bind('<x>',
         + str(root.winfo_reqheight()))
 )
 
-# Кнопка l (L) выводит длинну хранимого списка
+# нажатие на клавишу <l> (L) выводит длинну хранимого списка
 root.bind('<l>', lambda e: debug_display_var.set(str(len(lst))))
 
 # Запрет изменения размера окна
 root.resizable(False, False)
 
-# Основной ивент окна
 root.mainloop()
